@@ -19,9 +19,34 @@ def BuildSearchSetFromSentenceLists(SentenceLists):
             wordSearchSet[word].add(sindex)
     return wordSearchSet
 
-def getSentencesSetsFromKeywords(keywords, wordSearchSet):
-    matchedIndexes = []
+def getHittingSetListFromKeywordsList(keywords, wordSearchSet):
+    ''' get sentence indexes given keyword(s) '''
+    hittingSetList = []
     for word in keywords:
-        matchedIndexes.append(
-            set() if word not in wordSearchSet else wordSearchSet[word] 
-    return matchedIndexes
+        hittingSetList.append(
+            set() if word not in wordSearchSet else wordSearchSet[word])
+    return hittingSetList
+
+def getGreedySortedList_CoveringMaxElementsFirst(hittingSetList):
+    if not hittingSetList: raise ValueError("hittingSetList invalid or empty")
+    greedyListWithCount = []
+    MaxCountList = []
+    for hs in hittingSetList:
+        MaxCountList.extend(hs)
+    from collections import Counter
+    greedyListWithCount = Counter(MaxCountList).most_common()
+    return greedyListWithCount
+    
+
+def getKeywordSearchedSentences(text, keywords):
+    ''' given keywords, returns best match sentences list '''
+    sentencesList = ConvertParagraphToSentenceLists(text)
+    wordSearchSet = BuildSearchSetFromSentenceLists(sentencesList)
+    hittingSetList = getHittingSetListFromKeywordsList(
+        keywords, wordSearchSet)
+    SearchedSentenceIndexes = getGreedySortedList_CoveringMaxElementsFirst(
+        hittingSetList)
+    return [' '.join(sentencesList[sIndex]) for sIndex,repeatCount in SearchedSentenceIndexes]
+
+
+    

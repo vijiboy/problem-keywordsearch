@@ -36,11 +36,24 @@ class Test_TextStructuring(unittest.TestCase):
             "lion is a wild animal. dog is a pet animal")
         kwords = BuildSearchSetFromSentenceLists(
             slist)
-        keywordSearchResult = getSentencesSetsFromKeywords(
+        keywordSearchResult = getHittingSetListFromKeywordsList(
             'what is a wild animal'.split(),
             kwords)
-        print(keywordSearchResult)
+        self.assertEqual(
+            keywordSearchResult,
+            [set(), {0, 1}, {0, 1}, {0}, {0, 1}])
+        
+    def test_GreedySortedListSpansMaxKeywords(self):
+        greedySetList = getGreedySortedList_CoveringMaxElementsFirst(
+            [set(), {0, 1}, {0, 1}, {0}, {0, 1}])
+        self.assertEqual(greedySetList, [(0,4),(1,3)])
 
+    def test_keywordSearch_Complex(self):
+        MatchedSentences = getKeywordSearchedSentences(
+            text = 'lion is a wild animal. dog is a pet. lion can kill. dog cannot kill',
+            keywords = 'who cannot kill?'.split()) 
+        self.assertEqual(MatchedSentences[0], 'dog cannot kill')
+        
         
 
 if __name__ == '__main__':
