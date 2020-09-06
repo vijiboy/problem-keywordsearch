@@ -15,6 +15,7 @@ def BuildSearchSetFromSentenceLists(SentenceLists):
     wordSearchSet = {} # maps word to sentences its present in
     for sindex, sentence in enumerate(SentenceLists):
         for word in sentence:
+            #if word in ['A', 'a', 'and', 'the', 'The', 'is']: continue # ignore common words
             if word not in wordSearchSet: wordSearchSet[word] = set()
             wordSearchSet[word].add(sindex)
     return wordSearchSet
@@ -29,24 +30,25 @@ def getHittingSetListFromKeywordsList(keywords, wordSearchSet):
 
 def getGreedySortedList_CoveringMaxElementsFirst(hittingSetList):
     if not hittingSetList: raise ValueError("hittingSetList invalid or empty")
-    greedyListWithCount = []
     MaxCountList = []
     for hs in hittingSetList:
         MaxCountList.extend(hs)
     from collections import Counter
-    greedyListWithCount = Counter(MaxCountList).most_common()
-    return greedyListWithCount
-    
+    return Counter(MaxCountList).most_common()
 
-def getKeywordSearchedSentences(text, keywords):
-    ''' given keywords, returns best match sentences list '''
-    sentencesList = ConvertParagraphToSentenceLists(text)
-    wordSearchSet = BuildSearchSetFromSentenceLists(sentencesList)
+def getKeywordSearchedSentences(sentencesList, wordSearchSet, keywords):
+    ''' given keywords, returns best matches form sentences list '''
     hittingSetList = getHittingSetListFromKeywordsList(
         keywords, wordSearchSet)
     SearchedSentenceIndexes = getGreedySortedList_CoveringMaxElementsFirst(
         hittingSetList)
-    return [' '.join(sentencesList[sIndex]) for sIndex,repeatCount in SearchedSentenceIndexes]
+    # TODO improve, sentence being re-created using words, maynot match paragraph substring exactly
+    return [' '.join(sentencesList[sIndex]) for sIndex,repeatCount in SearchedSentenceIndexes] 
 
-
+def SelectSubStringPerfectlyMatchingFirstOfSentences(substrings, sentencesList):
+    for sentence in sentencesList:
+        for substring in substrings:
+            if substring in sentence:
+                return substring
+    raise ValueError("sentences Did not match exactly matching substring")
     
