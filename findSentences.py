@@ -15,7 +15,7 @@ def BuildSearchSetFromSentenceLists(SentenceLists):
     wordSearchSet = {} # maps word to sentences its present in
     for sindex, sentence in enumerate(SentenceLists):
         for word in sentence:
-            #if word in ['A', 'a', 'and', 'the', 'The', 'is']: continue # ignore common words
+            if word in ['a', 'and', 'the', 'is', 'are', 'of']: continue # ignore common words
             if word not in wordSearchSet: wordSearchSet[word] = set()
             wordSearchSet[word].add(sindex)
     return wordSearchSet
@@ -48,7 +48,7 @@ def getKeywordSearchedSentences(sentencesList, wordSearchSet, keywords):
 def SelectSubStringPerfectlyMatchingFirstOfSentences(substrings, sentencesList):
     for sentence in sentencesList:
         for substring in substrings:
-            if substring in sentence:
-                return substring
+            if substring.strip() in sentence:
+                return substring.strip()
     raise ValueError("sentences Did not match exactly matching substring")
     
