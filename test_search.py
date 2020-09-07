@@ -2,7 +2,7 @@ import unittest
 from findSentences import *
 import os
 
-class Test_TextStructuring(unittest.TestCase):
+class Test_TextSearch(unittest.TestCase):
     def test_ConvertParagraph_To_SentenceLists(self):
         #print(ParseParagraph("single sentence"))
         sentences = ConvertParagraphToSentenceLists("single sentence")
